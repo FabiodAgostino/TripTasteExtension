@@ -78,7 +78,7 @@ Crea le icone nei formati richiesti:
 
 ### Metodo 1: Pulsante Floating
 1. Naviga su una pagina ristorante TripAdvisor
-2. Apparirà automaticamente il pulsante "🍽️ Aggiungi a Salento"
+2. Apparirà automaticamente il pulsante "🍽️ Aggiungi a TripTaste"
 3. Clicca per estrarre e aggiungere automaticamente
 
 ### Metodo 2: Popup Extension
