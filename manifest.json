@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "TripTaste",
+  "version": "1.0.0",
+  "description": "Estrai dati dei ristoranti da TripAdvisor e salvali su Firebase per TripTaste",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage",
+    "tabs",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://www.tripadvisor.com/*",
+    "https://www.tripadvisor.it/*",
+    "https://firestore.googleapis.com/*",
+    "https://trip-advisor-scraping-api.vercel.app/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.tripadvisor.com/Restaurant_Review*",
+        "https://www.tripadvisor.it/Restaurant_Review*"
+      ],
+      "js": ["content-script.js"],
+      "css": ["extension-styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "TripTaste - Estrai dati ristorante"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["extension-styles.css"],
+      "matches": [
+        "https://www.tripadvisor.com/*",
+        "https://www.tripadvisor.it/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,335 @@
+<!-- ================================ -->
+<!-- 1. MODIFICARE il tuo popup.html -->
+<!-- ================================ -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TripTaste - Salento Restaurant Scraper</title>
+    <style>
+        body {
+            width: 400px;
+            min-height: 500px;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .header {
+            padding: 24px;
+            text-align: center;
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 800;
+        }
+        
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* NUOVO CSS per la configurazione */
+        .config-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1000;
+        }
+
+        #config-status.success {
+            color: #00C851;
+            background: rgba(0, 200, 81, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        #config-status.error {
+            color: #FF4444;
+            background: rgba(255, 68, 68, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        #config-status.info {
+            color: #33b5e5;
+            background: rgba(51, 181, 229, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        .content {
+            padding: 24px;
+        }
+        
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        
+        .status-label {
+            opacity: 0.8;
+        }
+        
+        .status-value {
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+        }
+        
+        .status-value.success {
+            background: rgba(0, 200, 81, 0.3);
+            color: #00C851;
+        }
+        
+        .status-value.error {
+            background: rgba(255, 68, 68, 0.3);
+            color: #FF4444;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .instructions h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .step-number {
+            background: #FF6B35;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #F7931E, #FF6B35);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 12px;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- SEZIONE CONFIGURAZIONE (aggiunta) -->
+    <div id="config-section" class="config-section" style="display: none;">
+        <div class="header">
+            <h1>🔑 Configurazione</h1>
+            <p>Prima configurazione dell'estensione</p>
+        </div>
+        <div class="content">
+            <div class="status-card">
+                <h3 style="margin: 0 0 16px 0; font-size: 16px;">🔑 Configurazione Richiesta</h3>
+                <p style="margin-bottom: 20px; font-size: 14px; opacity: 0.9;">
+                    Inserisci la secret key per configurare l'estensione per la prima volta:
+                </p>
+                
+                <input type="password" id="secret-input" placeholder="Secret key..." 
+                       style="width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 8px; font-size: 14px; background: rgba(255,255,255,0.9); color: #333;">
+                
+                <button id="configure-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    🔐 Configura Extension
+                </button>
+                
+                <div id="config-status" style="margin-top: 15px; font-size: 12px; text-align: center;"></div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 12px; opacity: 0.8;">
+                    💡 <strong>Nota:</strong> La configurazione viene salvata per sempre sul browser. Dovrai inserire la secret key solo una volta.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENUTO PRINCIPALE (esistente) -->
+    <div id="main-content">
+        <div class="header">
+            <h1>🍽️ TripTaste</h1>
+            <p>Salento Restaurant Scraper</p>
+        </div>
+        
+        <div class="content">
+            <div class="status-card">
+                <h3 style="margin: 0 0 16px 0; font-size: 16px;">📊 Status Extension</h3>
+                <div class="status-item">
+                    <span class="status-label">Firebase:</span>
+                    <span class="status-value" id="firebase-status">Controllo...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Ristoranti sincronizzati:</span>
+                    <span class="status-value" id="synced-count">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Falliti:</span>
+                    <span class="status-value" id="failed-count">0</span>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3>🚀 Come usare l'extension</h3>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>Vai su <strong>tripadvisor.it</strong> e cerca un ristorante del Salento</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>Apri la pagina del ristorante</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>Clicca sul pulsante <strong>"🍽️ Aggiungi a TripTaste"</strong> che apparirà in alto a destra</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>Compila il form e clicca <strong>"Aggiungi a TripTaste"</strong></div>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-primary" id="test-firebase">
+                    🧪 Test Connessione Firebase
+                </button>
+                <button class="btn btn-secondary" id="view-stats">
+                    📈 Vedi Statistiche
+                </button>
+                <a href="https://www.tripadvisor.it/Restaurants-g194791-Lecce_Province_of_Lecce_Puglia.html" 
+                   target="_blank" class="btn btn-secondary">
+                    🔍 Apri TripAdvisor Lecce
+                </a>
+            </div>
+            
+            <div class="loading hidden" id="loading">
+                <div class="spinner"></div>
+                <div>Caricamento...</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            TripTaste Extension v1.0.0<br>
+            per il progetto Salento Restaurant Explorer
+        </div>
+    </div>
+
+    <!-- IMPORTANTE: Rimuovi tutto il JavaScript da qui e mettilo in popup.js -->
+    <script src="popup.js"></script>
+</body>
+</html>
+
+<!-- ============================================================ -->
+<!-- 2. CREARE un nuovo file popup.js con tutto il JavaScript -->
+<!-- ============================================================ -->
+
+// QUESTO CONTENUTO VA NEL FILE popup.js:
+
+// Variabili globali
