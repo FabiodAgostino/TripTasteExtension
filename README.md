@@ -1,6 +1,4 @@
-# 🍽️ Salento Restaurant Scraper - Chrome Extension
-
-Una Chrome Extension per estrarre automaticamente dati di ristoranti da TripAdvisor e aggiungerli al database del progetto Salento Restaurant Explorer.
+Una Chrome Extension per estrarre automaticamente dati di ristoranti da TripAdvisor e aggiungerli al database del progetto TripTaste.
 
 ## 🚀 Caratteristiche
 
@@ -214,5 +212,3 @@ Per problemi o suggerimenti:
 - [ ] Dashboard statistiche avanzate
 
 ---
-
-**Made with ❤️ for Salento Restaurant Explorer**
