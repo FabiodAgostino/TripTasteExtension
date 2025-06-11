@@ -883,6 +883,7 @@ function generateRandomId() {
 // Invia dati della modale - VERSIONE CORRETTA
 async function submitModalData() {
   try {
+    console.log('📝 Raccogliendo dati dal form...');
     
     // Raccogli dati dal form
     const modalData = {
@@ -913,8 +914,9 @@ async function submitModalData() {
       imageUrl: scraper.extractedData?.imageUrl
     };
     
+    console.log('📋 Dati raccolti:', modalData);
     
-    // Validazione
+    // Validazione base
     if (!modalData.name || !modalData.rating || !modalData.priceRange || !modalData.location) {
       showErrorNotification('Compila tutti i campi obbligatori (Nome, Rating, Prezzo, Località)');
       return;
@@ -935,11 +937,65 @@ async function submitModalData() {
     // Imposta cuisine principale
     modalData.cuisine = modalData.cuisines[0] || 'italiana';
     
-    // Mostra loading
-    showLoadingOverlay('Aggiunta al database TripTaste...');
-    modalData.id
+    // 🔧 NUOVO: CONTROLLO DUPLICATI PRIMA DELL'INVIO
+    showLoadingOverlay('Controllo duplicati...');
     
-    // Invia al background script - CON PROMESSA
+    try {
+      const duplicateCheck = await new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({
+          action: 'checkDuplicate',
+          restaurantName: modalData.name
+        }, (response) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+          } else {
+            resolve(response);
+          }
+        });
+      });
+      
+      console.log('🔍 Risultato controllo duplicati:', duplicateCheck);
+      
+      if (duplicateCheck && duplicateCheck.isDuplicate) {
+        hideLoadingOverlay();
+        
+        // 🔧 NUOVO: MOSTRA DIALOGO DI CONFERMA PER DUPLICATI
+        const userConfirm = confirm(
+          `⚠️ ATTENZIONE: Duplicato Rilevato!\n\n` +
+          `Esiste già un ristorante con il nome "${modalData.name}" nel database.\n\n` +
+          `Vuoi procedere comunque con l'aggiunta?\n\n` +
+          `• Clicca "OK" per aggiungere lo stesso\n` +
+          `• Clicca "Annulla" per modificare il nome o annullare`
+        );
+        
+        if (!userConfirm) {
+          console.log('❌ Utente ha annullato aggiunta duplicato');
+          return; // Utente ha scelto di non procedere
+        }
+        
+        console.log('✅ Utente ha confermato aggiunta duplicato');
+      }
+      
+    } catch (duplicateError) {
+      console.warn('⚠️ Errore controllo duplicati:', duplicateError);
+      hideLoadingOverlay();
+      
+      // Se il controllo duplicati fallisce, chiedi all'utente se vuole procedere
+      const proceedAnyway = confirm(
+        `⚠️ Impossibile verificare duplicati.\n\n` +
+        `Vuoi procedere comunque con l'aggiunta?\n\n` +
+        `Errore: ${duplicateError.message}`
+      );
+      
+      if (!proceedAnyway) {
+        return;
+      }
+    }
+    
+    // Mostra loading per l'aggiunta finale
+    showLoadingOverlay('Aggiunta al database TripTaste...');
+    
+    // Invia al background script
     const response = await new Promise((resolve, reject) => {
       chrome.runtime.sendMessage({
         action: 'addToFirebase',
@@ -953,7 +1009,7 @@ async function submitModalData() {
       });
     });
     
-    
+    console.log('📤 Risposta invio Firebase:', response);
     
     hideLoadingOverlay();
     closeDataModal();
@@ -961,13 +1017,30 @@ async function submitModalData() {
     if (response && response.success) {
       showSuccessNotification('Ristorante aggiunto con successo al database TripTaste!');
     } else {
-      showErrorNotification(response?.error || 'Errore durante l\'aggiunta al database');
+      // 🔧 GESTIONE SPECIFICA PER ERRORE DUPLICATO DAL SERVER
+      if (response?.error && response.error.includes('esiste già')) {
+        showErrorNotification(
+          'Questo ristorante esiste già nel database. ' +
+          'Prova a modificare leggermente il nome se si tratta di un ristorante diverso.'
+        );
+      } else {
+        showErrorNotification(response?.error || 'Errore durante l\'aggiunta al database');
+      }
     }
     
   } catch (error) {
     console.error('❌ Errore invio dati modale:', error);
     hideLoadingOverlay();
-    showErrorNotification(`Errore durante l'invio: ${error.message}`);
+    
+    // 🔧 GESTIONE SPECIFICA ERRORI
+    if (error.message && error.message.includes('esiste già')) {
+      showErrorNotification(
+        'Questo ristorante esiste già nel database. ' +
+        'Verifica il nome o prova con un nome leggermente diverso.'
+      );
+    } else {
+      showErrorNotification(`Errore durante l'invio: ${error.message}`);
+    }
   }
 }
 

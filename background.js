@@ -577,6 +577,35 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         .catch(error => sendResponse({ success: false, error: error.message }));
       return true;
 
+      case 'checkDuplicate':
+      if (!request.restaurantName) {
+        sendResponse({ 
+          success: false, 
+          error: 'Nome ristorante richiesto',
+          isDuplicate: false 
+        });
+        return false;
+      }
+
+      // Usa Promise.then() invece di async/await
+      checkRestaurantDuplicate(request.restaurantName)
+        .then(isDuplicate => {
+          sendResponse({ 
+            success: true, 
+            isDuplicate: isDuplicate,
+            restaurantName: request.restaurantName 
+          });
+        })
+        .catch(error => {
+          console.error('❌ Errore controllo duplicati:', error);
+          sendResponse({ 
+            success: false, 
+            error: error.message,
+            isDuplicate: false 
+          });
+        });
+      return true;
+
     case 'addToFirebase':
       if (!request.data) {
         sendResponse({ success: false, error: 'Dati ristorante mancanti' });
@@ -641,7 +670,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return false;
   }
 });
+async function checkRestaurantDuplicate(restaurantName) {
+  // Qui PUOI usare async/await perché non è nel listener diretto
+  await firebaseService.initialize();
+  const restaurants = await firebaseService.getRestaurants(1000);
+  
+  // Controllo duplicati con normalizzazione
+  const normalizedName = restaurantName.trim().toLowerCase();
+  return restaurants.some(restaurant => {
+    const data = convertFromFirestoreFormat(restaurant);
+    return data.name?.trim().toLowerCase() === normalizedName;
+  });
+}
 
+function convertFromFirestoreFormat(firestoreDoc) {
+  // Converte il formato Firestore in oggetto JavaScript normale
+  const converted = {};
+  for (const [key, value] of Object.entries(firestoreDoc.fields)) {
+    if (value.stringValue !== undefined) {
+      converted[key] = value.stringValue;
+    }
+    // ... altri tipi
+  }
+  return converted;
+}
 // ==========================================
 // 9. GESTORI EVENTI CHROME
 // ==========================================

@@ -779,3 +779,391 @@
 .trippaste-modal-content::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #F7931E, #FF6B35);
 }
+
+/* =============== STILI AGGIUNTIVI MANCANTI =============== */
+
+/* =============== NOTIFICHE SPECIFICHE PER DUPLICATI =============== */
+.salento-notification.duplicate {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: white;
+  border-left: 4px solid #B45309;
+  position: relative;
+  overflow: hidden;
+}
+
+.salento-notification.duplicate::before {
+  content: '⚠️';
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 18px;
+  animation: warningPulse 2s infinite;
+}
+
+.salento-notification.duplicate {
+  padding-left: 50px; /* Spazio per l'icona */
+}
+
+@keyframes warningPulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.1); 
+  }
+}
+
+/* =============== STATI DI LOADING PER I FORM =============== */
+.trippaste-form-group.loading input,
+.trippaste-form-group.loading select,
+.trippaste-form-group.loading textarea {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: loadingShimmer 1.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes loadingShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* =============== INDICATORE DI CONTROLLO DUPLICATI =============== */
+.trippaste-duplicate-check-indicator {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #FF6B35;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: duplicateCheckSpin 1s linear infinite;
+}
+
+@keyframes duplicateCheckSpin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+.trippaste-form-group.checking {
+  position: relative;
+}
+
+.trippaste-form-group.checking input {
+  padding-right: 45px;
+  border-color: #FF6B35;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+}
+
+/* =============== FEEDBACK VISIVO PER DUPLICATI =============== */
+.trippaste-form-group.duplicate-found input {
+  border-color: #DC2626;
+  background: linear-gradient(135deg, #FEF2F2 0%, #ffffff 100%);
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+}
+
+.trippaste-form-group.duplicate-found::after {
+  content: '⚠️ Possibile duplicato rilevato';
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  color: #DC2626;
+  font-size: 12px;
+  font-weight: 600;
+  animation: duplicateWarningBlink 2s infinite;
+}
+
+@keyframes duplicateWarningBlink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.7; }
+}
+
+.trippaste-form-group.duplicate-confirmed input {
+  border-color: #059669;
+  background: linear-gradient(135deg, #ECFDF5 0%, #ffffff 100%);
+  box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+}
+
+.trippaste-form-group.duplicate-confirmed::after {
+  content: '✅ Confermato dall\'utente';
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  color: #059669;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =============== OVERLAY DI CONFERMA DUPLICATI =============== */
+.trippaste-duplicate-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(220, 38, 38, 0.15);
+  z-index: 25000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: duplicateOverlayFadeIn 0.3s ease-out;
+  backdrop-filter: blur(4px);
+}
+
+@keyframes duplicateOverlayFadeIn {
+  from { 
+    opacity: 0; 
+    background: rgba(220, 38, 38, 0);
+  }
+  to { 
+    opacity: 1; 
+    background: rgba(220, 38, 38, 0.15);
+  }
+}
+
+/* =============== MIGLIORAMENTI PER IL PULSANTE SUBMIT =============== */
+.trippaste-btn-primary.checking {
+  background: linear-gradient(135deg, #6B7280, #9CA3AF);
+  pointer-events: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.trippaste-btn-primary.checking::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid white;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: buttonSpinner 1s linear infinite;
+}
+
+@keyframes buttonSpinner {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+.trippaste-btn-primary.checking {
+  padding-left: 50px; /* Spazio per lo spinner */
+}
+
+/* =============== NOTIFICHE DI STATO REAL-TIME =============== */
+.trippaste-status-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 30000;
+  animation: statusBannerSlideDown 0.5s ease-out;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+@keyframes statusBannerSlideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.trippaste-status-banner.checking {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+}
+
+.trippaste-status-banner.success {
+  background: linear-gradient(135deg, #10B981, #059669);
+}
+
+.trippaste-status-banner.error {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+}
+
+/* =============== TRANSIZIONI DI STATO PER IL FORM =============== */
+.trippaste-form-group input.state-transition {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trippaste-form-group input.pulse-animation {
+  animation: inputPulse 1.5s ease-in-out;
+}
+
+@keyframes inputPulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4);
+  }
+  50% { 
+    box-shadow: 0 0 0 8px rgba(255, 107, 53, 0);
+  }
+}
+
+/* =============== INDICATORI DI PROGRESSO =============== */
+.trippaste-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: linear-gradient(135deg, #FF6B35, #F7931E);
+  z-index: 35000;
+  transition: width 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+}
+
+.trippaste-progress-bar.active {
+  animation: progressBarGlow 2s infinite;
+}
+
+@keyframes progressBarGlow {
+  0%, 100% { 
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  }
+  50% { 
+    box-shadow: 0 2px 16px rgba(255, 107, 53, 0.6);
+  }
+}
+
+/* =============== TOOLTIP PER DUPLICATE CHECK =============== */
+.trippaste-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(31, 41, 55, 0.95);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-bottom: 8px;
+  z-index: 40000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.trippaste-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(31, 41, 55, 0.95);
+}
+
+.trippaste-form-group:hover .trippaste-tooltip {
+  opacity: 1;
+}
+
+/* =============== CORREZIONI PER MOBILE DUPLICATE CHECK =============== */
+@media (max-width: 768px) {
+  .trippaste-duplicate-check-indicator {
+    width: 16px;
+    height: 16px;
+    right: 12px;
+  }
+  
+  .trippaste-form-group.checking input {
+    padding-right: 40px;
+  }
+  
+  .trippaste-form-group.duplicate-found::after,
+  .trippaste-form-group.duplicate-confirmed::after {
+    font-size: 11px;
+    bottom: -20px;
+  }
+  
+  .trippaste-btn-primary.checking {
+    padding-left: 45px;
+  }
+  
+  .trippaste-btn-primary.checking::after {
+    left: 15px;
+    width: 14px;
+    height: 14px;
+  }
+  
+  .trippaste-status-banner {
+    font-size: 12px;
+    padding: 10px 15px;
+  }
+}
+
+/* =============== ACCESSIBILITY IMPROVEMENTS =============== */
+.trippaste-form-group[aria-describedby] input {
+  border-color: #6366F1;
+}
+
+.trippaste-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =============== FOCUS MANAGEMENT PER DUPLICATE CHECK =============== */
+.trippaste-duplicate-overlay:focus-within {
+  outline: 3px solid #FF6B35;
+  outline-offset: -3px;
+}
+
+/* =============== ANIMAZIONI DI SUCCESSO =============== */
+.trippaste-success-checkmark {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.trippaste-success-checkmark::before {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: #10B981;
+  font-size: 18px;
+  font-weight: bold;
+  animation: checkmarkBounce 0.6s ease-out 0.2s forwards;
+}
+
+@keyframes checkmarkBounce {
+  0% { transform: translate(-50%, -50%) scale(0) rotate(-45deg); }
+  50% { transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+/* =============== PERFORMANCE OPTIMIZATIONS =============== */
+.trippaste-modal-overlay,
+.salento-extraction-overlay,
+.trippaste-duplicate-overlay {
+  will-change: opacity, transform;
+}
+
+.trippaste-modal-container {
+  will-change: transform;
+}
+
+.trippaste-duplicate-check-indicator {
+  will-change: transform;
+}
